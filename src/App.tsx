@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { BigText } from "./BigText";
 import { InputBox } from "./InputBox";
+import { useLocalStorage } from "./useLocalStorage";
 
 const symbols = `!"§$%&/()=?^°#'+*-_.:,;<>{}[]|\\@€`;
 
@@ -16,12 +17,13 @@ const getRandomSymbol = (oldSymbol: string) => {
   return "!";
 };
 
-function App() {
+const App = () => {
   // pick a random symbol
   const [symbol, setSymbol] = useState(getRandomSymbol(""));
   const [text, setText] = useState("");
   const [error, setError] = useState(false);
   const [streak, setStreak] = useState("");
+  const [highScore, setHighScore] = useLocalStorage("highScore", 0);
 
   const textChanged = (e: ChangeEvent<HTMLInputElement>) => {
     let text = e.target.value;
@@ -32,12 +34,15 @@ function App() {
     if (text === symbol) {
       setError(false);
       setSymbol(getRandomSymbol(symbol));
-      setStreak(`${streak}${symbol}`);
+      const newStreak = `${streak}${symbol}`;
+      setStreak(newStreak);
+      if (newStreak.length > highScore) {
+        setHighScore(newStreak.length);
+      }
     } else {
       setError(true);
       setStreak("");
     }
-
     setText(text);
   };
 
@@ -47,10 +52,10 @@ function App() {
     <div className="bg-gray-600 gap-4 flex flex-col items-center justify-center h-screen ">
       <BigText>{symbol}</BigText>
       <InputBox error={error} text={text} onChange={textChanged} />
-      <BigText>{`Streak: ${streak.length}`}</BigText>
+      <BigText>{`Streak: ${streak.length} - Highscore ${highScore}`}</BigText>
       <BigText>{`${streakSeperated}`}</BigText>
     </div>
   );
-}
+};
 
 export default App;

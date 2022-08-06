@@ -9,7 +9,7 @@ interface InputBoxProps {
 export const InputBox = ({ text, error, onChange }: InputBoxProps) => {
   return (
     <input
-      className={`animate-[wiggle] h-10 rounded text-center ${
+      className={`h-10 rounded text-center ${
         text.length > 0 ? (error ? "bg-red-400" : "bg-green-400") : ""
       }`}
       autoFocus
